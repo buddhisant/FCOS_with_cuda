@@ -1,5 +1,5 @@
 # FCOS_with_cuda
-基于pytorch的标准版FCOS，支持多卡分布式训练，nms采用了基于pytorch的extension(该部分代码来源于mmdetection)，无需安装。
+基于pytorch的标准版FCOS，支持多卡分布式训练，nms采用了基于pytorch的extension(该部分代码来源于mmdetection)，需编译安装cuda extension。
 
 **代码中参考了[maskrcnn_benchmark](https://github.com/facebookresearch/maskrcnn-benchmark)和[mmdetection](https://github.com/open-mmlab/mmdetection)**
 
@@ -10,8 +10,8 @@
 **请确保已经安装pycocotools以及1.1.0版本以上的pytorch**
 
 # 使用方法：
-- git clone https://github.com/buddhisant/FCOS.git
-- cd FCOS
+- git clone https://github.com/buddhisant/FCOS_with_cuda.git
+- cd FCOS_with_cuda
 - mkdir pretrained
 - cd pretrained
 - wget https://download.openmmlab.com/pretrain/third_party/resnet50_caffe-788b5fa3.pth -O resnet50_caffe.pth
