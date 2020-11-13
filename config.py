@@ -1,11 +1,11 @@
 # 训练集标注文件的路径
-train_ann_path = "/home/buddhisant/data/coco/annotations/instances_train2017.json"
+train_ann_path = "./data/coco/annotations/instances_train2017.json"
 # 训练集图片文件夹的路径
-train_img_path = "/home/buddhisant/data/coco/images/train2017"
+train_img_path = "./data/coco/images/train2017"
 # 训练集标注文件的路径
-val_ann_path = "/home/buddhisant/data/coco/annotations/instances_val2017.json"
+val_ann_path = "./data/coco/annotations/instances_val2017.json"
 # 训练集图片文件夹的路径
-val_img_path = "/home/buddhisant/data/coco/images/val2017"
+val_img_path = "./data/coco/images/val2017"
 # 保存checkpoint的文件夹的路径
 archive_path = "./archive"
 # 保存测试结果的文件夹的路径
