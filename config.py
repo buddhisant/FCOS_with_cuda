@@ -94,7 +94,7 @@ warmup_factor=1/6
 #lr衰减率
 lr_decay_factor=0.1
 #lr衰减的时间点
-lr_decay_time=[8, 11]
+lr_decay_time=[9, 12]
 
 #训练的最大epoch数量
 max_epochs=12
