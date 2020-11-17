@@ -126,7 +126,8 @@ class resNet(torch.nn.Module):
         self.layer2 = build_layer(block, input_channels=256, planes=128, num_blocks=layers[1], stride=2)
         self.layer3 = build_layer(block, input_channels=512, planes=256, num_blocks=layers[2], stride=2)
         self.layer4 = build_layer(block, input_channels=1024, planes=512, num_blocks=layers[3], stride=2)
-
+        self._freeze_stages()
+        
     def _freeze_stages(self):
         """
         固定resnet中的参数，其中stem阶段的参数一定固定，layer1-layer4可选
