@@ -151,8 +151,8 @@ class FCOSLoss(torch.nn.Module):
             invalid1 = min_distance > 0
 
             #正样本标准2：到边框的最大距离不超过预设范围
-            min_distance_range = ranges_all_level[:, 0].reshape(-1, 1)
-            max_distance_range = ranges_all_level[:, 1].reshape(-1, 1)
+            min_distance_range = ranges_all_level[:, [0]]
+            max_distance_range = ranges_all_level[:, [1]]
             invalid2 = (max_distance > min_distance_range) & (max_distance < max_distance_range)
 
             areas[invalid1==0] = INF
