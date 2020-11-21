@@ -40,13 +40,13 @@ def train(is_dist, local_rank):
     model=model.cuda()
 
     if is_dist:
-        model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
         model=torch.nn.parallel.DistributedDataParallel(model,device_ids=[local_rank,],output_device=local_rank,broadcast_buffers=False)
     optimizer=solver.build_optimizer(model)
     scheduler=solver.scheduler(optimizer)
 
     model.train()
-
+    logs=[]
+    
     for epoch in range(1, cfg.max_epochs + 1):
         if is_dist:
             dataloader.sampler.set_epoch(epoch)
@@ -77,7 +77,7 @@ def train(is_dist, local_rank):
             losses = cls_loss + reg_loss + cen_loss
             optimizer.zero_grad()
             losses.backward()
-            utils.clip_grads(model.parameters())
+            grad_norm=utils.clip_grads(model.parameters())
             optimizer.step()
 
             batch_time_meter.update(time.time()-end_time)
@@ -98,17 +98,25 @@ def train(is_dist, local_rank):
                         "Reg_loss: %.4f (%.4f)" % (reg_loss_meter.val, reg_loss_meter.avg),
                         "Cen_loss: %.4f (%.4f)" % (cen_loss_meter.val, cen_loss_meter.avg),
                         "Loss: %.4f (%.4f)" % (losses_meter.val, losses_meter.avg),
-                        "lr: %.6f" % (optimizer.param_groups[0]["lr"])
+                        "lr: %.6f" % (optimizer.param_groups[0]["lr"]),
+                        "grad_norm: %.4f" % (grad_norm.item(),)
                     ])
                     print(res)
-
+                    logs.append(res)
                 batch_time_meter.reset()
                 cls_loss_meter.reset()
                 reg_loss_meter.reset()
                 cen_loss_meter.reset()
                 losses_meter.reset()
-
-        utils.save_model(model, epoch)
+        if(local_rank==0):
+            utils.save_model(model, epoch)
+        if(is_dist):
+            utils.synchronize()
+    if(local_rank==0):
+        with open("logs.txt","w") as f:
+            for i in logs:
+                f.write(i+"\n")
+    
 
 def main():
     # os.environ["CUDA_VISIBLE_DEVICES"]="0"
