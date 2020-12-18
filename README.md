@@ -10,6 +10,12 @@
 **请确保已经安装pycocotools以及1.1.0版本以上的pytorch**
 
 # 性能
+![测试结果](https://raw.githubusercontent.com/buddhisant/FCOS_with_cuda/main/result.png)
+||map|推理速度fps|
+|--|--|--|
+|our fcos|36.4|17.4|
+|mmdetection对应配置|36.2|22.9|
+注意推理速度在rtx2080ti上测得
 
 # 使用方法：
 - git clone https://github.com/buddhisant/FCOS_with_cuda.git
