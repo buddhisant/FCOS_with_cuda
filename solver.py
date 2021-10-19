@@ -31,15 +31,28 @@ class scheduler():
         self.optimizer=optimizer
         self.warmup_factor=cfg.warmup_factor
         self.lr_decay_factor = cfg.lr_decay_factor
+        self.lr_decay_time=cfg.lr_decay_time
+        self.num_warmup_iters=cfg.num_warmup_iters
 
-    def start_warmup(self):
-        for groups, init_lr in zip(self.optimizer.param_groups, self.init_lr):
-            groups["lr"] = init_lr * self.warmup_factor
+    def lr_decay(self, epoch):
+        new_lr = [self.compute_lr_by_epoch(lr,epoch) for lr in self.init_lr]
+        self.set_lr(new_lr)
 
-    def end_warmup(self):
-        for groups, init_lr in zip(self.optimizer.param_groups, self.init_lr):
-            groups["lr"] = init_lr
+    def constant_warmup(self,epoch,iteration):
+        if(iteration-1 < self.num_warmup_iters) and epoch==1:
+            new_lr = [lr* self.warmup_factor for lr in self.init_lr]
+            self.set_lr(new_lr)
+        elif(iteration-1 == self.num_warmup_iters) and epoch==1:
+            self.set_lr(self.init_lr)
 
-    def lr_decay(self):
-        for groups in self.optimizer.param_groups:
-            groups["lr"] = groups["lr"] * self.lr_decay_factor
+    def compute_lr_by_epoch(self, lr, epoch):
+        lr_decay_time=np.array(self.lr_decay_time,dtype=np.int)
+        index=np.nonzero(lr_decay_time<=epoch)[0]
+        if(index.size==0):
+            return lr
+        num=index[-1].item()+1
+        return lr*(self.lr_decay_factor**num)
+
+    def set_lr(self, lrs):
+        for params_group,new_lr in zip(self.optimizer.param_groups,lrs):
+            params_group["lr"] = new_lr
